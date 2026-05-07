@@ -1,64 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Assignment2_Optimized
 {
+    /// <summary>
+    /// Implements the centralised decision logic derived from Task 3 decision table.
+    /// Follows Information Expert principle (Kung, 2024, Section 6.3).
+    /// </summary>
     internal class DecisionEngine
     {
-        private NotificationService notificationService = new NotificationService();
+        // Threshold value from decision table (C2: Average score ≥ threshold)
+        private const double THRESHOLD = 7.0;
 
-        public void EvaluateOutcome(List<int> scores)
+        /// <summary>
+        /// Evaluates the outcome based on average score and consensus.
+        /// Maps directly to decision table rules R2, R3, R4, R5.
+        /// </summary>
+        /// <param name="averageScore">Calculated average score from reviewers</param>
+        /// <param name="consensusAchieved">Whether reviewers reached consensus</param>
+        /// <returns>Outcome string: "Accepted", "Rejected", or "Revision"</returns>
+        public string EvaluateDecision(double averageScore, bool consensusAchieved)
         {
-            double avg = CalculateAverage(scores);
-            bool consensus = CheckConsensus(scores);
+            Console.WriteLine("Evaluating decision...");
 
-            string result = ApplyRules(avg, consensus);
+            // R2: High score + consensus → Accept
+            if (averageScore >= THRESHOLD && consensusAchieved)
+                return "Accepted";
 
-            // Trigger outcome (matches sequence diagram alt fragment)
-            if (result == "accepted")
-            {
-                notificationService.NotifyAcceptance();
-            }
-            else if (result == "rejected")
-            {
-                notificationService.NotifyRejection();
-            }
-            else
-            {
-                notificationService.NotifyRevision();
-            }
-        }
+            // R3: Low score + consensus → Reject
+            if (averageScore < THRESHOLD && consensusAchieved)
+                return "Rejected";
 
-        private double CalculateAverage(List<int> scores)
-        {
-            Console.WriteLine("Calculating average...");
+            // R4: High score + NO consensus → Revise
+            if (averageScore >= THRESHOLD && !consensusAchieved)
+                return "Revision";
 
-            double sum = 0;
-            foreach (var s in scores)
-            {
-                sum += s;
-            }
-
-            return sum / scores.Count;
-        }
-
-        private bool CheckConsensus(List<int> scores)
-        {
-            Console.WriteLine("Checking consensus...");
-            return true;
-        }
-
-        private string ApplyRules(double avg, bool consensus)
-        {
-            Console.WriteLine("Applying rules...");
-
-            if (avg > 7 && consensus)
-                return "accepted";
-
-            if (avg < 4)
-                return "rejected";
-
-            return "revision";
+            // R5: Low score + NO consensus → Reject (else/default case)
+            return "Rejected";
         }
     }
 }
