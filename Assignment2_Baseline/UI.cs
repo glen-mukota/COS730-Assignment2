@@ -14,7 +14,7 @@ namespace Assignment2_Baseline
 
         public void ReturnError()
         {
-            Console.WriteLine("Error: Invalid submission");
+            Console.WriteLine("Error: Submission failed");
         }
     }
 }
