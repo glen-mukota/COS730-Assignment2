@@ -7,12 +7,14 @@ namespace Assignment2_Optimized
     {
         public void SaveSubmission(string data)
         {
-            Console.WriteLine("Saving submission...");
+            if (Program.EnableLogging)
+                Console.WriteLine("Saving submission...");
         }
 
         public List<Reviewer> FetchReviewers()
         {
-            Console.WriteLine("Fetching reviewers...");
+            if (Program.EnableLogging)
+                Console.WriteLine("Fetching reviewers...");
 
             return new List<Reviewer>
             {
@@ -23,7 +25,8 @@ namespace Assignment2_Optimized
 
         public void SaveScore(int score)
         {
-            Console.WriteLine("Saving score: " + score);
+            if (Program.EnableLogging)
+                Console.WriteLine("Saving score: " + score);
         }
     }
 }

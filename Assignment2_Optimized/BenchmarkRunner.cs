@@ -1,65 +1,52 @@
 ﻿using Assignment2_Optimized;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
-namespace Assignment2_Optimised
+namespace Assignment2_Optimised  // Note: namespace matches your original
 {
     public class BenchmarkRunner
     {
         public static void Run()
         {
+            // CRITICAL: Disable all console logging inside the timed loop
+            Program.EnableLogging = false;
+
             UI ui = new UI();
             string testData = "Sample Research Data";
 
             int runs = 1000;
-            long[] times = new long[runs];
+            List<long> ticks = new List<long>();
 
-            var stopwatch = new Stopwatch();
-
-            // Warm-up (important)
+            // Warm-up (JIT stabilisation)
             for (int i = 0; i < 50; i++)
             {
                 ui.SubmitResearchOutput(testData);
             }
 
+            Stopwatch stopwatch = new Stopwatch();
+
             // Benchmark loop
             for (int i = 0; i < runs; i++)
             {
                 stopwatch.Restart();
-
                 ui.SubmitResearchOutput(testData);
-
                 stopwatch.Stop();
-                times[i] = stopwatch.ElapsedTicks;
+                ticks.Add(stopwatch.ElapsedTicks);
             }
 
-            // Convert ticks to milliseconds
+            // Convert ticks to milliseconds (using Stopwatch.Frequency)
             double tickToMs = 1000.0 / Stopwatch.Frequency;
+            List<double> timesMs = ticks.Select(t => t * tickToMs).ToList();
 
-            double total = 0;
-            double min = double.MaxValue;
-            double max = double.MinValue;
-
-            foreach (var t in times)
-            {
-                double ms = t * tickToMs;
-                total += ms;
-
-                if (ms < min) min = ms;
-                if (ms > max) max = ms;
-            }
-
-            double average = total / runs;
+            double total = timesMs.Sum();
+            double average = timesMs.Average();
+            double min = timesMs.Min();
+            double max = timesMs.Max();
 
             // Standard deviation
-            double variance = 0;
-            foreach (var t in times)
-            {
-                double ms = t * tickToMs;
-                variance += Math.Pow(ms - average, 2);
-            }
-
-            variance /= runs;
+            double variance = timesMs.Average(t => Math.Pow(t - average, 2));
             double stdDev = Math.Sqrt(variance);
 
             Console.WriteLine("OPTIMISED BENCHMARK RESULTS");
@@ -68,6 +55,9 @@ namespace Assignment2_Optimised
             Console.WriteLine($"Min Time: {min:F3} ms");
             Console.WriteLine($"Max Time: {max:F3} ms");
             Console.WriteLine($"Standard Deviation: {stdDev:F3} ms");
+
+            // Optional: re-enable logging if needed after benchmark
+            Program.EnableLogging = true;
         }
     }
 }

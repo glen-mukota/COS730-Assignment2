@@ -1,20 +1,19 @@
-﻿using System;
+﻿using Assignment2_Optimised;
+using System;
 
-namespace Assignment2_Optimised
+namespace Assignment2_Optimized
 {
     internal class Program
     {
-        // Keep this for consistency (even if you don't fully use it)
-        public static bool EnableLogging = true;
+        // Global flag to enable/disable console logging (for accurate benchmarking)
+        public static bool EnableLogging { get; set; } = true;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting Optimised Benchmark...\n");
-
+            // Run benchmark (logging automatically disabled inside benchmark)
             BenchmarkRunner.Run();
 
-            Console.WriteLine("\nBenchmark complete.");
-            Console.WriteLine("Press Enter to exit...");
+            Console.WriteLine("\nBenchmark complete. Press Enter to exit...");
             Console.ReadLine();
         }
     }

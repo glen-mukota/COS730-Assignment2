@@ -11,6 +11,7 @@ namespace Assignment2_Optimized
     {
         private Database database = new Database();
         private DecisionEngine decisionEngine = new DecisionEngine();
+        private NotificationService notificationService = new NotificationService(); // moved out of method
 
         public void StartEvaluation(List<Reviewer> reviewers)
         {
@@ -32,7 +33,6 @@ namespace Assignment2_Optimized
             string outcome = decisionEngine.EvaluateDecision(averageScore, consensusAchieved);
 
             // Trigger notification based on outcome (matches sequence diagram alt fragment)
-            NotificationService notificationService = new NotificationService();
             if (outcome == "Accepted")
                 notificationService.NotifyAcceptance();
             else if (outcome == "Rejected")
@@ -43,7 +43,9 @@ namespace Assignment2_Optimized
 
         private double CalculateAverage(List<int> scores)
         {
-            Console.WriteLine("Calculating average...");
+            if (Program.EnableLogging)
+                Console.WriteLine("Calculating average...");
+
             double sum = 0;
             foreach (var s in scores)
                 sum += s;
@@ -52,7 +54,9 @@ namespace Assignment2_Optimized
 
         private bool CheckConsensus(List<int> scores)
         {
-            Console.WriteLine("Checking consensus...");
+            if (Program.EnableLogging)
+                Console.WriteLine("Checking consensus...");
+
             // For demonstration – in real system this would check variance, etc.
             return true;
         }

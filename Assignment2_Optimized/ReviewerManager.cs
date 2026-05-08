@@ -16,7 +16,7 @@ namespace Assignment2_Optimized
             // Fetch all reviewers from persistence
             List<Reviewer> reviewers = database.FetchReviewers();
 
-            // Single consolidated filtering operation (replaces fetch -> filter conflicts -> check workload)
+            // Single consolidated filtering operation
             reviewers = FilterEligibleReviewers(reviewers);
 
             return reviewers;
@@ -27,7 +27,8 @@ namespace Assignment2_Optimized
         /// </summary>
         private List<Reviewer> FilterEligibleReviewers(List<Reviewer> reviewers)
         {
-            Console.WriteLine("Filtering eligible reviewers (combined conflict + workload check)...");
+            if (Program.EnableLogging)
+                Console.WriteLine("Filtering eligible reviewers (combined conflict + workload check)...");
 
             List<Reviewer> eligible = new List<Reviewer>();
 
