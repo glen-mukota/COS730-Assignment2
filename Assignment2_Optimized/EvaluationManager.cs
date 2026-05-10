@@ -4,20 +4,18 @@ using System.Collections.Generic;
 namespace Assignment2_Optimized
 {
     /// <summary>
-    /// Responsible for score aggregation only (High Cohesion – Kung Section 6.3.5).
-    /// Decision logic removed and delegated to DecisionEngine.
+    /// Orchestrates the evaluation workflow: scoring, aggregation, decision, and notification.
     /// </summary>
     internal class EvaluationManager
     {
         private Database database = new Database();
         private DecisionEngine decisionEngine = new DecisionEngine();
-        private NotificationService notificationService = new NotificationService(); // moved out of method
+        private NotificationService notificationService = new NotificationService();
 
         public void StartEvaluation(List<Reviewer> reviewers)
         {
-            List<int> scores = new List<int>();
+            var scores = new List<int>(reviewers.Count);
 
-            // Loop each reviewer (as per optimised sequence diagram)
             foreach (var reviewer in reviewers)
             {
                 int score = reviewer.SubmitScore();
@@ -25,20 +23,23 @@ namespace Assignment2_Optimized
                 scores.Add(score);
             }
 
-            // Calculate metrics (responsibility of EvaluationManager)
             double averageScore = CalculateAverage(scores);
-            bool consensusAchieved = CheckConsensus(scores);
+            bool consensus = CheckConsensus(scores);
+            string outcome = decisionEngine.EvaluateDecision(averageScore, consensus);
 
-            // Delegate decision outcome to DecisionEngine (pure fabrication)
-            string outcome = decisionEngine.EvaluateDecision(averageScore, consensusAchieved);
-
-            // Trigger notification based on outcome (matches sequence diagram alt fragment)
-            if (outcome == "Accepted")
-                notificationService.NotifyAcceptance();
-            else if (outcome == "Rejected")
-                notificationService.NotifyRejection();
-            else if (outcome == "Revision")
-                notificationService.NotifyRevision();
+            // Dispatch notification based on outcome.
+            switch (outcome)
+            {
+                case "Accepted":
+                    notificationService.NotifyAcceptance();
+                    break;
+                case "Rejected":
+                    notificationService.NotifyRejection();
+                    break;
+                case "Revision":
+                    notificationService.NotifyRevision();
+                    break;
+            }
         }
 
         private double CalculateAverage(List<int> scores)
@@ -57,7 +58,7 @@ namespace Assignment2_Optimized
             if (Program.EnableLogging)
                 Console.WriteLine("Checking consensus...");
 
-            // For demonstration – in real system this would check variance, etc.
+            // Placeholder: implement variance or agreement threshold in production.
             return true;
         }
     }

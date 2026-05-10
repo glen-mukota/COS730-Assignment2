@@ -4,8 +4,7 @@ using System.Collections.Generic;
 namespace Assignment2_Optimized
 {
     /// <summary>
-    /// Consolidated reviewer filtering – single pass instead of three separate traversals.
-    /// Implements high cohesion (Kung Section 6.3.5) and reduces chatty interactions.
+    /// Selects reviewers by applying conflict‑of‑interest and workload checks in a single pass.
     /// </summary>
     internal class ReviewerManager
     {
@@ -13,30 +12,24 @@ namespace Assignment2_Optimized
 
         public List<Reviewer> GetEligibleReviewers()
         {
-            // Fetch all reviewers from persistence
             List<Reviewer> reviewers = database.FetchReviewers();
 
-            // Single consolidated filtering operation
+            // Single consolidated filtering step (conflict + workload).
             reviewers = FilterEligibleReviewers(reviewers);
 
             return reviewers;
         }
 
-        /// <summary>
-        /// Applies all eligibility criteria in one pass.
-        /// </summary>
         private List<Reviewer> FilterEligibleReviewers(List<Reviewer> reviewers)
         {
             if (Program.EnableLogging)
                 Console.WriteLine("Filtering eligible reviewers (combined conflict + workload check)...");
 
-            List<Reviewer> eligible = new List<Reviewer>();
+            var eligible = new List<Reviewer>(reviewers.Count);
 
             foreach (var reviewer in reviewers)
             {
-                // Check conflict-of-interest (simplified demonstration)
                 bool hasConflict = CheckConflict(reviewer);
-                // Check workload capacity (simplified demonstration)
                 bool withinWorkload = CheckWorkload(reviewer);
 
                 if (!hasConflict && withinWorkload)
@@ -48,15 +41,13 @@ namespace Assignment2_Optimized
 
         private bool CheckConflict(Reviewer reviewer)
         {
-            // In a real system: query database, check affiliations, etc.
-            // Placeholder for demonstration
+            // Placeholder: perform actual conflict checks in a real system.
             return false;
         }
 
         private bool CheckWorkload(Reviewer reviewer)
         {
-            // In a real system: count assigned reviews, compare to max capacity
-            // Placeholder for demonstration
+            // Placeholder: verify reviewer’s current load against capacity.
             return true;
         }
     }

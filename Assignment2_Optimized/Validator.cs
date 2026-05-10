@@ -6,7 +6,9 @@ namespace Assignment2_Optimized
     {
         public bool ValidateFormat(string data)
         {
-            Console.WriteLine("Validating format...");
+            if (Program.EnableLogging)
+                Console.WriteLine("Validating format...");
+
             return !string.IsNullOrEmpty(data);
         }
     }

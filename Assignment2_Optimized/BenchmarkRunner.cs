@@ -1,34 +1,35 @@
-﻿using Assignment2_Optimized;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Assignment2_Optimised  // Note: namespace matches your original
+namespace Assignment2_Optimized
 {
     public class BenchmarkRunner
     {
+        private const int WarmUpIterations = 50;
+        private const int MeasurementIterations = 1000;
+
         public static void Run()
         {
-            // CRITICAL: Disable all console logging inside the timed loop
+            // Suppress I/O during measurement.
             Program.EnableLogging = false;
 
-            UI ui = new UI();
-            string testData = "Sample Research Data";
+            var ui = new UI();
+            const string testData = "Sample Research Data";
 
-            int runs = 1000;
-            List<long> ticks = new List<long>();
+            var ticks = new List<long>(MeasurementIterations);
 
-            // Warm-up (JIT stabilisation)
-            for (int i = 0; i < 50; i++)
+            // Warm‑up phase: stabilise JIT and caches.
+            for (int i = 0; i < WarmUpIterations; i++)
             {
                 ui.SubmitResearchOutput(testData);
             }
 
-            Stopwatch stopwatch = new Stopwatch();
+            var stopwatch = new Stopwatch();
 
-            // Benchmark loop
-            for (int i = 0; i < runs; i++)
+            // Measurement phase.
+            for (int i = 0; i < MeasurementIterations; i++)
             {
                 stopwatch.Restart();
                 ui.SubmitResearchOutput(testData);
@@ -36,16 +37,14 @@ namespace Assignment2_Optimised  // Note: namespace matches your original
                 ticks.Add(stopwatch.ElapsedTicks);
             }
 
-            // Convert ticks to milliseconds (using Stopwatch.Frequency)
+            // Convert ticks to milliseconds.
             double tickToMs = 1000.0 / Stopwatch.Frequency;
-            List<double> timesMs = ticks.Select(t => t * tickToMs).ToList();
+            var timesMs = ticks.Select(t => t * tickToMs).ToList();
 
             double total = timesMs.Sum();
             double average = timesMs.Average();
             double min = timesMs.Min();
             double max = timesMs.Max();
-
-            // Standard deviation
             double variance = timesMs.Average(t => Math.Pow(t - average, 2));
             double stdDev = Math.Sqrt(variance);
 
@@ -56,8 +55,8 @@ namespace Assignment2_Optimised  // Note: namespace matches your original
             Console.WriteLine($"Max Time: {max:F3} ms");
             Console.WriteLine($"Standard Deviation: {stdDev:F3} ms");
 
-            // Optional: re-enable logging if needed after benchmark
-            Program.EnableLogging = true;
+            // Logging can be left disabled or re‑enabled depending on needs.
+            // Program.EnableLogging = true;
         }
     }
 }

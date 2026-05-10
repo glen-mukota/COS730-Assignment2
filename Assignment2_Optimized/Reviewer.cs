@@ -4,15 +4,20 @@ namespace Assignment2_Optimized
 {
     internal class Reviewer
     {
+        private static readonly Random RandomScoreGenerator = new Random();
+
         public void AssignReview()
         {
-            Console.WriteLine("Review assigned");
+            if (Program.EnableLogging)
+                Console.WriteLine("Review assigned");
         }
 
         public int SubmitScore()
         {
-            Console.WriteLine("Submitting score...");
-            return new Random().Next(1, 10);
+            if (Program.EnableLogging)
+                Console.WriteLine("Submitting score...");
+
+            return RandomScoreGenerator.Next(1, 10);
         }
     }
 }

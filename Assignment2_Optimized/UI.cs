@@ -13,7 +13,8 @@ namespace Assignment2_Optimized
 
         public void ReturnError()
         {
-            Console.WriteLine("Error: Invalid submission");
+            if (Program.EnableLogging)
+                Console.WriteLine("Error: Invalid submission");
         }
     }
 }

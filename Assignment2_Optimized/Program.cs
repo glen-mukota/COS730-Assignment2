@@ -1,16 +1,17 @@
-﻿using Assignment2_Optimised;
-using System;
+﻿using System;
 
 namespace Assignment2_Optimized
 {
     internal class Program
     {
-        // Global flag to enable/disable console logging (for accurate benchmarking)
+        /// <summary>
+        /// Global flag used to suppress diagnostic console output during benchmarks.
+        /// </summary>
         public static bool EnableLogging { get; set; } = true;
 
         static void Main(string[] args)
         {
-            // Run benchmark (logging automatically disabled inside benchmark)
+            // The benchmark runner disables logging before measuring.
             BenchmarkRunner.Run();
 
             Console.WriteLine("\nBenchmark complete. Press Enter to exit...");

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Assignment2_Optimized
 {
@@ -12,28 +11,26 @@ namespace Assignment2_Optimized
 
         public void Submit(string data)
         {
-            // Validation
-            bool isValid = validator.ValidateFormat(data);
-
-            if (!isValid)
+            // 1. Validate.
+            if (!validator.ValidateFormat(data))
             {
                 new UI().ReturnError();
                 return;
             }
 
-            // Persistence
+            // 2. Persist.
             database.SaveSubmission(data);
 
-            // Reviewer selection (OPTIMISED)
+            // 3. Obtain eligible reviewers (optimised single‑pass filtering).
             List<Reviewer> reviewers = reviewerManager.GetEligibleReviewers();
 
-            // Assign reviewers
+            // 4. Assign reviewers.
             foreach (var reviewer in reviewers)
             {
                 reviewer.AssignReview();
             }
 
-            // Start evaluation (delegates decision)
+            // 5. Launch evaluation.
             evaluationManager.StartEvaluation(reviewers);
         }
     }
