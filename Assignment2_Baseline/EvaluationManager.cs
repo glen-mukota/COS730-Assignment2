@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace Assignment2_Baseline
 {
+    /// <summary>
+    /// Coordinates the evaluation process: collects scores, calculates average,
+    /// checks consensus, applies decision rules, and triggers appropriate notifications.
+    /// </summary>
     internal class EvaluationManager
     {
         private Database database = new Database();
@@ -10,7 +14,7 @@ namespace Assignment2_Baseline
 
         public void StartEvaluation(List<Reviewer> reviewers)
         {
-            List<int> scores = new List<int>();
+            var scores = new List<int>(reviewers.Count);
 
             foreach (var reviewer in reviewers)
             {
@@ -19,21 +23,21 @@ namespace Assignment2_Baseline
                 scores.Add(score);
             }
 
-            double avg = CalculateAverage(scores);
+            double average = CalculateAverage(scores);
             bool consensus = CheckConsensus(scores);
-            string result = ApplyRules(avg, consensus);
+            string decision = ApplyRules(average, consensus);
 
-            if (result == "accepted")
+            switch (decision)
             {
-                notificationService.NotifyAcceptance();
-            }
-            else if (result == "rejected")
-            {
-                notificationService.NotifyRejection();
-            }
-            else
-            {
-                notificationService.NotifyRevision();
+                case "accepted":
+                    notificationService.NotifyAcceptance();
+                    break;
+                case "rejected":
+                    notificationService.NotifyRejection();
+                    break;
+                default:
+                    notificationService.NotifyRevision();
+                    break;
             }
         }
 
@@ -60,20 +64,21 @@ namespace Assignment2_Baseline
                 Console.WriteLine("Checking consensus...");
             }
 
+            // Placeholder: real consensus logic would examine score variance.
             return true;
         }
 
-        public string ApplyRules(double avg, bool consensus)
+        public string ApplyRules(double average, bool consensus)
         {
             if (Program.EnableLogging)
             {
                 Console.WriteLine("Applying rules...");
             }
 
-            if (avg > 7 && consensus)
+            if (average > 7 && consensus)
                 return "accepted";
 
-            if (avg < 4)
+            if (average < 4)
                 return "rejected";
 
             return "revision";

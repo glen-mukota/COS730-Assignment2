@@ -2,29 +2,44 @@
 
 namespace Assignment2_Baseline
 {
+    /// <summary>
+    /// Handles notifications to the researcher about the evaluation result.
+    /// </summary>
     internal class NotificationService
     {
         public void NotifyAcceptance()
         {
-            Console.WriteLine("Accepted");
-            SendNotification();
+            if (Program.EnableLogging)
+            {
+                Console.WriteLine("Accepted");
+                SendNotification();
+            }
         }
 
         public void NotifyRejection()
         {
-            Console.WriteLine("Rejected");
-            SendNotification();
+            if (Program.EnableLogging)
+            {
+                Console.WriteLine("Rejected");
+                SendNotification();
+            }
         }
 
         public void NotifyRevision()
         {
-            Console.WriteLine("Revision required");
-            SendNotification();
+            if (Program.EnableLogging)
+            {
+                Console.WriteLine("Revision required");
+                SendNotification();
+            }
         }
 
         public void SendNotification()
         {
-            Console.WriteLine("Notification sent to researcher");
+            if (Program.EnableLogging)
+            {
+                Console.WriteLine("Notification sent to researcher");
+            }
         }
     }
 }

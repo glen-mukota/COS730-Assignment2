@@ -4,19 +4,21 @@ namespace Assignment2_Baseline
 {
     internal class Program
     {
-        // Global flag to control console output
+        /// <summary>
+        /// Global flag used to disable console output during benchmarking.
+        /// </summary>
         public static bool EnableLogging = true;
 
         static void Main(string[] args)
         {
             Console.WriteLine("Starting Baseline Benchmark...\n");
 
-            // 🔴 CRITICAL: Disable logging BEFORE benchmark starts
+            // Disable logging to eliminate I/O overhead during measurement.
             EnableLogging = false;
 
             BenchmarkRunner.Run();
 
-            // (Optional) Re-enable logging after benchmark
+            // Re‑enable logging after the benchmark.
             EnableLogging = true;
 
             Console.WriteLine("\nBenchmark complete.");

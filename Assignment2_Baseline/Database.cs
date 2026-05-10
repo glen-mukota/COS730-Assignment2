@@ -3,16 +3,28 @@ using System.Collections.Generic;
 
 namespace Assignment2_Baseline
 {
+    /// <summary>
+    /// Simulates a database for storing submissions and reviewer information.
+    /// </summary>
     internal class Database
     {
         public void SaveSubmission(string data)
         {
-            Console.WriteLine("Saving submission...");
+            if (Program.EnableLogging)
+            {
+                Console.WriteLine("Saving submission...");
+            }
         }
 
+        /// <summary>
+        /// Retrieves a fixed list of reviewer objects.
+        /// </summary>
         public List<Reviewer> FetchReviewers()
         {
-            Console.WriteLine("Fetching reviewers...");
+            if (Program.EnableLogging)
+            {
+                Console.WriteLine("Fetching reviewers...");
+            }
 
             return new List<Reviewer>
             {
@@ -23,7 +35,10 @@ namespace Assignment2_Baseline
 
         public void SaveScore(int score)
         {
-            Console.WriteLine("Saving score: " + score);
+            if (Program.EnableLogging)
+            {
+                Console.WriteLine("Saving score: " + score);
+            }
         }
     }
 }

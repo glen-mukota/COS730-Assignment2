@@ -7,50 +7,49 @@ namespace Assignment2_Baseline
 {
     public class BenchmarkRunner
     {
+        // Constants controlling the benchmark setup.
+        private const int WarmUpIterations = 50;
+        private const int MeasurementIterations = 1000;
+
         public static void Run()
         {
-            // Disable logging to remove I/O overhead
+            // Disable logging to remove I/O overhead (already set by caller, but safe redundancy).
             Program.EnableLogging = false;
 
-            UI ui = new UI();
-            string testData = "AI Research Paper Submission";
+            var ui = new UI();
+            const string testData = "AI Research Paper Submission";
 
-            // Warm-up (JIT stabilisation)
-            for (int i = 0; i < 50; i++)
+            // Warm‑up phase: let the JIT compiler stabilise.
+            for (int i = 0; i < WarmUpIterations; i++)
             {
                 ui.SubmitResearchOutput(testData);
             }
 
-            List<long> executionTimes = new List<long>();
-            Stopwatch stopwatch = new Stopwatch();
+            var executionTimes = new List<long>(MeasurementIterations);
+            var stopwatch = new Stopwatch();
 
-            // Benchmark runs
-            for (int i = 0; i < 1000; i++)
+            // Measurement phase.
+            for (int i = 0; i < MeasurementIterations; i++)
             {
                 stopwatch.Restart();
-
                 ui.SubmitResearchOutput(testData);
-
                 stopwatch.Stop();
                 executionTimes.Add(stopwatch.ElapsedTicks);
             }
 
-            // Convert ticks to milliseconds
-            double tickFrequency = (double)Stopwatch.Frequency;
-            List<double> timesMs = executionTimes
+            // Convert ticks to milliseconds.
+            double tickFrequency = Stopwatch.Frequency;
+            var timesMs = executionTimes
                 .Select(t => (t / tickFrequency) * 1000.0)
                 .ToList();
 
             double average = timesMs.Average();
             double min = timesMs.Min();
             double max = timesMs.Max();
-
-            double stdDev = Math.Sqrt(timesMs
-                .Average(t => Math.Pow(t - average, 2)));
-
+            double stdDev = Math.Sqrt(timesMs.Average(t => Math.Pow(t - average, 2)));
             double totalTime = timesMs.Sum();
 
-            // Output results
+            // Output results (always printed, irrespective of EnableLogging).
             Console.WriteLine("BASELINE BENCHMARK RESULTS");
             Console.WriteLine($"Total Time: {totalTime:F3} ms");
             Console.WriteLine($"Average Time per Run: {average:F3} ms");
@@ -58,8 +57,7 @@ namespace Assignment2_Baseline
             Console.WriteLine($"Max Time: {max:F3} ms");
             Console.WriteLine($"Standard Deviation: {stdDev:F3} ms");
 
-            // Re-enable logging if needed later
-            Program.EnableLogging = true;
+            // (Logging is re‑enabled by the caller after Run returns.)
         }
     }
 }
